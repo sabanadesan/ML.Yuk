@@ -463,11 +463,11 @@ namespace ML.Yuk
         //
         // Returns:
         //     DataFrame
-        public static DataFrame LoadCsv(string filename, char separator = ',', bool header = true, NDArray columnNames = null, NDArray dataTypes = null, int numRows = -1, int guessRows = 10, bool addIndexColumn = false, Encoding encoding = null)
+        public static DataFrame LoadCsv(string filename, char separator = ',', bool header = true, NDArray columnNames = null, NDArray dataTypes = null, bool addIndexColumn = false)
         {
             FileStream fs = File.OpenRead(filename);
 
-            DataFrame df = LoadCsv(fs, separator, header, columnNames, dataTypes, numRows, guessRows, addIndexColumn, encoding);
+            DataFrame df = LoadCsv(fs, separator, header, columnNames, dataTypes, addIndexColumn);
 
             fs.Close();
 
@@ -508,7 +508,7 @@ namespace ML.Yuk
         //
         // Returns:
         //     DataFrame
-        public static DataFrame LoadCsv(Stream csvStream, char separator = ',', bool header = true, NDArray columnNames = null, NDArray dataTypes = null, long numberOfRowsToRead = -1, int guessRows = 10, bool addIndexColumn = false, Encoding encoding = null)
+        public static DataFrame LoadCsv(Stream csvStream, char separator = ',', bool header = true, NDArray columnNames = null, NDArray dataTypes = null, bool addIndexColumn = false)
         {
             DataFrame df = new DataFrame();
 
@@ -518,11 +518,17 @@ namespace ML.Yuk
 
             NDArray array;
             NDArray cols = null;
+            NDArray index = null;
 
             for (int i = 0; i < lines.Length - 1; i++)
             {
-                array = GetLine(lines[i]);
+                array = GetLine(lines[i], addIndexColumn);
 
+                if (addIndexColumn)
+                {
+                    index = GetLineIndex(lines[i]);
+                }
+                
                 if (array.Length > 0)
                 {
                     if (header == true && i == 0)
@@ -531,7 +537,7 @@ namespace ML.Yuk
                     }
                     else
                     {
-                        df.Add(array, null, cols, dataTypes);
+                        df.Add(array, index, cols, dataTypes);
                     }
                 }
             }
@@ -539,7 +545,7 @@ namespace ML.Yuk
             return df;
         }
 
-        private static NDArray GetLine(String line)
+        private static NDArray GetLine(String line, bool ignoreIndex = false)
         {
             NDArray nd = new NDArray();
 
@@ -551,8 +557,40 @@ namespace ML.Yuk
             line = line.Replace("\0", "");
 
             fields = parser.ParseFields(line);
-            foreach (string field in fields)
+            for(int i = 0; i < fields.Length; i++)
             {
+                if (ignoreIndex == true && i == 0)
+                {
+                    // Skip
+                }
+                else
+                {
+                    string field = fields[i];
+                    nd.Add(field);
+                }
+            }
+
+            return nd;
+        }
+
+        private static NDArray GetLineIndex(String line)
+        {
+            NDArray nd = null;
+
+            TextFieldParser parser = new TextFieldParser();
+
+            string[] fields;
+
+            line = line.Replace("\r", "");
+            line = line.Replace("\0", "");
+
+            fields = parser.ParseFields(line);
+
+            if (fields.Length > 0)
+            {
+                string field = fields[0];
+
+                nd = new NDArray();
                 nd.Add(field);
             }
 
