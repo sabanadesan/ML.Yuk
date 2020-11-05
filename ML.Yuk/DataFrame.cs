@@ -407,6 +407,11 @@ namespace ML.Yuk
                 int new_value = Convert.ToInt32(value);
                 array[index] = new_value;
             }
+            else if (type.Equals(typeof(bool)))
+            {
+                bool new_value = Convert.ToBoolean(value);
+                array[index] = new_value;
+            }
             else if (type.Equals(typeof(double)))
             {
                 double new_value = Convert.ToDouble(value);
