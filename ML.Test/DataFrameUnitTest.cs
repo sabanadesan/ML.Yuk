@@ -227,8 +227,8 @@ namespace ML.Test
 
             df.Add(i, index, null);
 
-            Pair col3 = new Pair("Column1", new Series(new NDArray(1, 2, 3, 7, 8)));
-            Pair col4 = new Pair("Column2", new Series(new NDArray(4, 5, 6, 9, 10)));
+            Pair col3 = new Pair("Column1", new Series(new NDArray(1, 2, 3, 7, 8), new NDArray(0, 1, 2, "Hat", "Cat")));
+            Pair col4 = new Pair("Column2", new Series(new NDArray(4, 5, 6, 9, 10), new NDArray(0, 1, 2, "Hat", "Cat")));
 
             DataFrame df1 = new DataFrame(col3, col4);
 

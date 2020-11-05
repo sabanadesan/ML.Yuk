@@ -333,15 +333,21 @@ namespace ML.Yuk
 
             if (j == -1)
             {
+                dynamic ind = null;
+
+                if (index != null)
+                {
+                    ind = lbl_index;
+                }
 
                 if (dataTypes != null)
                 {
                     Type type = dataTypes[col];
-                    AddToSeries(t, value, type);
+                    AddToSeries(t, value, type, ind);
                 }
                 else
                 {
-                    t.Add(value);
+                   t.Add(value, ind);
                 }
                     
                 if (col == 0)
@@ -365,27 +371,32 @@ namespace ML.Yuk
             }
         }
 
-        private void AddToSeries(Series array, dynamic value, Type type)
+        private void AddToSeries(Series array, dynamic value, Type type, dynamic index)
         {
             if (type.Equals(typeof(int)))
             {
                 int new_value = Convert.ToInt32(value);
-                array.Add(new_value);
+                array.Add(new_value, index);
+            }
+            else if (type.Equals(typeof(bool)))
+            {
+                bool new_value = Convert.ToBoolean(value);
+                array.Add(new_value, index);
             }
             else if (type.Equals(typeof(double)))
             {
                 double new_value = Convert.ToDouble(value);
-                array.Add(new_value);
+                array.Add(new_value, index);
             }
             else if (type.Equals(typeof(DateTime)))
             {
                 DateTime new_value = Convert.ToDateTime(value);
-                array.Add(new_value);
+                array.Add(new_value, index);
             }
             else
             {
                 string new_value = Convert.ToString(value);
-                array.Add(new_value);
+                array.Add(new_value, index);
             }
         }
 
