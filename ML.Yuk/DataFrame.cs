@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.IO;
+using System.Net;
 
 namespace ML.Yuk
 {
@@ -425,8 +426,36 @@ namespace ML.Yuk
             else
             {
                 string new_value = Convert.ToString(value);
-                array[index] = new_value;
+                
             }
+        }
+
+        private static dynamic SetType(dynamic value, Type type)
+        {
+            dynamic new_value = null;
+
+            if (type.Equals(typeof(int)))
+            {
+                new_value = Convert.ToInt32(value);
+            }
+            else if (type.Equals(typeof(bool)))
+            {
+                new_value = Convert.ToBoolean(value);
+            }
+            else if (type.Equals(typeof(double)))
+            {
+                new_value = Convert.ToDouble(value);
+            }
+            else if (type.Equals(typeof(DateTime)))
+            {
+                new_value = Convert.ToDateTime(value);
+            }
+            else
+            {
+                new_value = Convert.ToString(value);
+            }
+
+            return new_value;
         }
 
         //
@@ -520,14 +549,17 @@ namespace ML.Yuk
             NDArray cols = null;
             NDArray index = null;
 
+            Type type = null;
+
+            if (addIndexColumn)
+            {
+                type = dataTypes[0];
+                dataTypes = RemoveIndexFromDataType(dataTypes);
+            }
+
             for (int i = 0; i < lines.Length - 1; i++)
             {
                 array = GetLine(lines[i], addIndexColumn);
-
-                if (addIndexColumn)
-                {
-                    index = GetLineIndex(lines[i]);
-                }
                 
                 if (array.Length > 0)
                 {
@@ -537,12 +569,29 @@ namespace ML.Yuk
                     }
                     else
                     {
+                        if (addIndexColumn)
+                        {
+                            index = GetLineIndex(lines[i], type);
+                        }
+
                         df.Add(array, index, cols, dataTypes);
                     }
                 }
             }
                
             return df;
+        }
+
+        private static NDArray RemoveIndexFromDataType(NDArray dataTypes)
+        {
+            NDArray nd = new NDArray();
+
+            for(int i = 1; i < dataTypes.Length; i++)
+            {
+                nd.Add(dataTypes[i]);
+            }
+
+            return nd;
         }
 
         private static NDArray GetLine(String line, bool ignoreIndex = false)
@@ -573,7 +622,7 @@ namespace ML.Yuk
             return nd;
         }
 
-        private static NDArray GetLineIndex(String line)
+        private static NDArray GetLineIndex(String line, Type type)
         {
             NDArray nd = null;
 
@@ -591,7 +640,10 @@ namespace ML.Yuk
                 string field = fields[0];
 
                 nd = new NDArray();
-                nd.Add(field);
+
+                dynamic new_field = SetType(field, type);
+
+                nd.Add(new_field);
             }
 
             return nd;
