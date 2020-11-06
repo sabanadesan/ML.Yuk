@@ -225,9 +225,9 @@ namespace ML.Yuk
             get { return GetLength(); }
         }
 
-        public int Columns
+        public NDArray Columns
         {
-            get { return _columns.Length; }
+            get { return _columns; }
         }
 
         private int GetLength()
