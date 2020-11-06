@@ -529,9 +529,9 @@ namespace ML.Yuk
             string[] lines = s.Split('\n');
 
             NDArray array;
-            NDArray cols = null;
-            NDArray index = null;
+            NDArray cols = columnNames;
 
+            NDArray indexVal = null;
             Type type = null;
 
             if (addIndexColumn)
@@ -554,10 +554,10 @@ namespace ML.Yuk
                     {
                         if (addIndexColumn)
                         {
-                            index = GetLineIndex(lines[i], type);
+                            indexVal = GetLineIndex(lines[i], type);
                         }
 
-                        df.Add(array, index, cols, dataTypes);
+                        df.Add(array, indexVal, cols, dataTypes);
                     }
                 }
             }
