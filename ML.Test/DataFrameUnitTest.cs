@@ -459,5 +459,34 @@ namespace ML.Test
 
             Assert.True(t.Equals(t2), "Arrays are not equal.");
         }
+
+        [Fact]
+        public void SetIndex()
+        {
+            Pair col = new Pair("Date", new Series(new NDArray(DateTime.Parse("2018-03-12"), DateTime.Parse("2018-03-13"), DateTime.Parse("2018-03-14"))));
+            Pair col1 = new Pair("Open", new Series(new NDArray(1592.599976, 1615.959961, 1597.000000)));
+            Pair col2 = new Pair("High", new Series(new NDArray(1605.329956, 1617.540039, 1606.439941)));
+            Pair col3 = new Pair("Low", new Series(new NDArray(1586.699951, 1578.010010, 1590.890015)));
+            Pair col4 = new Pair("Close", new Series(new NDArray(1598.390015, 1588.180054, 1591.000000)));
+            Pair col5 = new Pair("Adj Close", new Series(new NDArray(1598.390015, 1588.180054, 1591.000000)));
+            Pair col6 = new Pair("Volume", new Series(new NDArray(5174200, 6531900, 4175400)));
+
+            DataFrame df = new DataFrame(col, col1, col2, col3, col4, col5, col6);
+
+            df.SetIndex("Date");
+
+            NDArray index = new NDArray(DateTime.Parse("2018-03-12"), DateTime.Parse("2018-03-13"), DateTime.Parse("2018-03-14"));
+
+            Pair col1a = new Pair("Open", new Series(new NDArray(1592.599976, 1615.959961, 1597.000000), index));
+            Pair col2a = new Pair("High", new Series(new NDArray(1605.329956, 1617.540039, 1606.439941), index));
+            Pair col3a = new Pair("Low", new Series(new NDArray(1586.699951, 1578.010010, 1590.890015), index));
+            Pair col4a = new Pair("Close", new Series(new NDArray(1598.390015, 1588.180054, 1591.000000), index));
+            Pair col5a = new Pair("Adj Close", new Series(new NDArray(1598.390015, 1588.180054, 1591.000000), index));
+            Pair col6a = new Pair("Volume", new Series(new NDArray(5174200, 6531900, 4175400), index));
+
+            DataFrame df1 = new DataFrame(col1a, col2a, col3a, col4a, col5a, col6a);
+
+            Assert.True(df.Equals(df1), "Arrays are not equal.");
+        }
     }
 }

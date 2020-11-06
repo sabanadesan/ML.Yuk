@@ -57,6 +57,11 @@ namespace ML.Yuk
             }
         }
 
+        public void SetIndex(string column)
+        {
+
+        }
+
         public void AddColumn(Pair p)
         {
             String k = p.Key();
