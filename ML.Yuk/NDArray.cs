@@ -333,12 +333,18 @@ namespace ML.Yuk
             return false;
         }
 
-        /*
+        
         public static NDArray Unique(NDArray array)
         {
+            dynamic[] items = array._array;
+            IEnumerable<dynamic> uniqueItems = items.Distinct<dynamic>();
 
+            NDArray newItems = new NDArray(uniqueItems.ToArray());
+
+            return newItems;
         }
 
+        /*
         public void Zeros()
         {
 

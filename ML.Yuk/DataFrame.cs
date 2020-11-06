@@ -53,8 +53,20 @@ namespace ML.Yuk
                 _data.Add(t);
 
                 //To Do: Get all indexes and unique
-                _indexes = t.GetIndex();
+                _indexes = NDArray.Unique(_indexes.Concat(t.GetIndex()));
             }
+        }
+
+        public void AddColumn(Pair p)
+        {
+            String k = p.Key();
+            Series t = p.Value();
+
+            _columns.Add(k);
+            _data.Add(t);
+
+            //To Do: Get all indexes and unique
+            _indexes = NDArray.Unique(_indexes.Concat(t.GetIndex()));
         }
 
         public dynamic GetRow(dynamic index)
