@@ -27,6 +27,11 @@ namespace ML.Yuk
             _index = index;
         }
 
+        public NDArray GetValue()
+        {
+            return _array.Copy();
+        }
+
         public NDArray GetIndex()
         {
             return _index.Copy();

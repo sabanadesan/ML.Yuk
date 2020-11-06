@@ -4,6 +4,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.IO;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace ML.Yuk
 {
@@ -54,6 +55,33 @@ namespace ML.Yuk
                 //To Do: Get all indexes and unique
                 _indexes = t.GetIndex();
             }
+        }
+
+        public dynamic GetRow(dynamic index)
+        {
+            int row = FindIndexRow(index);
+
+            NDArray array = new NDArray();
+
+            for (int i = 0; i < _data.Length; i++)
+            {
+                Series scol = _data[i];
+                dynamic a = scol[row];
+                array.Add(a);
+            }
+
+            return array;
+        }
+
+        public dynamic GetCol(dynamic column)
+        {
+            int i = FindIndexCol(column);
+
+            Series scol = _data[i];
+
+            NDArray array = scol.GetValue();
+
+            return array;
         }
 
         public dynamic this[Slice row, Slice col]
