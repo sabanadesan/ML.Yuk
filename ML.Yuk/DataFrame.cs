@@ -225,6 +225,11 @@ namespace ML.Yuk
             get { return GetLength(); }
         }
 
+        public int Columns
+        {
+            get { return _columns.Length; }
+        }
+
         private int GetLength()
         {
             NDArray array = _data;
@@ -573,7 +578,7 @@ namespace ML.Yuk
                     }
                 }
             }
-               
+
             return df;
         }
 
