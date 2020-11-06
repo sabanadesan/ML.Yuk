@@ -232,7 +232,7 @@ namespace ML.Yuk
 
         public NDArray Columns
         {
-            get { return _columns; }
+            get { return _columns.Copy(); }
         }
 
         private int GetLength()
