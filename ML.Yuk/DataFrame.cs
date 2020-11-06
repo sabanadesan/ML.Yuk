@@ -374,60 +374,15 @@ namespace ML.Yuk
 
         private void AddToSeries(Series array, dynamic value, Type type, dynamic index)
         {
-            if (type.Equals(typeof(int)))
-            {
-                int new_value = Convert.ToInt32(value);
-                array.Add(new_value, index);
-            }
-            else if (type.Equals(typeof(bool)))
-            {
-                bool new_value = Convert.ToBoolean(value);
-                array.Add(new_value, index);
-            }
-            else if (type.Equals(typeof(double)))
-            {
-                double new_value = Convert.ToDouble(value);
-                array.Add(new_value, index);
-            }
-            else if (type.Equals(typeof(DateTime)))
-            {
-                DateTime new_value = Convert.ToDateTime(value);
-                array.Add(new_value, index);
-            }
-            else
-            {
-                string new_value = Convert.ToString(value);
-                array.Add(new_value, index);
-            }
+            dynamic new_value = SetType(value, type);
+            array.Add(new_value, index);
         }
 
         private void SetToSeries(Series array, int index, dynamic value, Type type)
         {
-            if (type.Equals(typeof(int)))
-            {
-                int new_value = Convert.ToInt32(value);
-                array[index] = new_value;
-            }
-            else if (type.Equals(typeof(bool)))
-            {
-                bool new_value = Convert.ToBoolean(value);
-                array[index] = new_value;
-            }
-            else if (type.Equals(typeof(double)))
-            {
-                double new_value = Convert.ToDouble(value);
-                array[index] = new_value;
-            }
-            else if (type.Equals(typeof(DateTime)))
-            {
-                DateTime new_value = Convert.ToDateTime(value);
-                array[index] = new_value;
-            }
-            else
-            {
-                string new_value = Convert.ToString(value);
-                
-            }
+
+            dynamic new_value = SetType(value, type);
+            array[index] = new_value;
         }
 
         private static dynamic SetType(dynamic value, Type type)
