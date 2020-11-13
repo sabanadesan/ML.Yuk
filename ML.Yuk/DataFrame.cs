@@ -52,7 +52,6 @@ namespace ML.Yuk
                 _columns.Add(k);
                 _data.Add(t);
 
-                //To Do: Get all indexes and unique
                 _indexes = NDArray.Unique(_indexes.Concat(t.GetIndex()));
             }
         }
@@ -90,15 +89,63 @@ namespace ML.Yuk
             return array;
         }
 
-        public dynamic GetCol(dynamic column)
+        private dynamic GetCol(string column)
         {
             int i = FindIndexCol(column);
 
-            Series scol = _data[i];
+            return GetColByIndex(i);
+        }
+
+        private dynamic GetColByIndex(int column)
+        {
+            Series scol = _data[column];
 
             NDArray array = scol.GetValue();
 
             return array;
+        }
+
+        private void SetCol(string column, NDArray value)
+        {
+            int i = FindIndexCol(column);
+
+            SetColByIndex(i, value);
+        }
+
+        private void SetColByIndex(int column, NDArray value)
+        {
+            Series t = new Series(value);
+
+            _data[column] = t;
+
+            _indexes = NDArray.Unique(_indexes.Concat(t.GetIndex()));
+        }
+
+
+        private void SetCol(string column, Series value)
+        {
+            int i = FindIndexCol(column);
+
+            SetColByIndex(i, value);
+        }
+
+        private void SetColByIndex(int column, Series value)
+        {
+            _data[column] = value;
+
+            _indexes = NDArray.Unique(_indexes.Concat(value.GetIndex()));
+        }
+
+        public dynamic this[string col]
+        {
+            get => GetCol(col);
+            set => SetCol(col, value);
+        }
+
+        public dynamic this[int col]
+        {
+            get => GetColByIndex(col);
+            set => SetColByIndex(col, value);
         }
 
         public dynamic this[Slice row, Slice col]
@@ -672,5 +719,57 @@ namespace ML.Yuk
 
             return converted;
         }
+
+        public void PctChange()
+        {
+
+        }
+
+        public void CumProd()
+        {
+
+        }
+
+        public static DataFrame operator +(DataFrame a) => a;
+
+        public static DataFrame operator -(DataFrame a) => a * -1;
+
+        public static DataFrame operator +(DataFrame a, DataFrame b)
+            => new DataFrame();
+
+        public static DataFrame operator +(DataFrame a, double b)
+            => new DataFrame();
+
+        public static DataFrame operator +(double a, DataFrame b)
+            => new DataFrame();
+
+        public static DataFrame operator -(DataFrame a, DataFrame b)
+            => a + (-b);
+
+        public static DataFrame operator -(DataFrame a, double b)
+            => a + (-b);
+
+        public static DataFrame operator -(double a, DataFrame b)
+            => a + (-b);
+
+        public static DataFrame operator *(DataFrame a, DataFrame b)
+            => new DataFrame();
+
+        public static DataFrame operator *(DataFrame a, double b)
+            => new DataFrame();
+
+        public static DataFrame operator *(double a, DataFrame b)
+            => new DataFrame();
+
+        public static DataFrame operator /(DataFrame a, DataFrame b)
+        {
+            return new DataFrame();
+        }
+
+        public static DataFrame operator /(DataFrame a, double b)
+            => new DataFrame();
+
+        public static DataFrame operator /(double a, DataFrame b)
+            => new DataFrame();
     }
 }
