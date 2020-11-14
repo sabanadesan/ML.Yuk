@@ -85,9 +85,22 @@ namespace ML.Yuk
 
             for (int i = 0; i < c1; i++)
             {
-                if (!obj1[i].Equals(obj2[i]))
+                dynamic a = obj1[i];
+                dynamic b = obj2[i];
+
+                if (a == null || b == null)
                 {
-                    isEqual = false;
+                    if (!(a == null && b == null)) 
+                    {
+                        isEqual = false;
+                    }
+                }
+                else
+                {
+                    if (!a.Equals(b))
+                    {
+                        isEqual = false;
+                    }
                 }
             }
 

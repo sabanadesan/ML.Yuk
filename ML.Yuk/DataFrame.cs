@@ -720,12 +720,12 @@ namespace ML.Yuk
 
         public DataFrame PctChange()
         {
-            return new DataFrame();
+            return ApplyPreviousFunc(this, CalcPctChange);
         }
 
         public DataFrame CumProd()
         {
-            return new DataFrame();
+            return ApplyPreviousAllFunc(this, Product, true);
         }
 
         private static double Sum(double a, double b)
@@ -746,6 +746,11 @@ namespace ML.Yuk
         private static double Div(double a, double b)
         {
             return a / b;
+        }
+
+        private static double CalcPctChange(double a, double b)
+        {
+            return ((b - a) / a);
         }
 
         private static DataFrame ApplyFunc(DataFrame a, DataFrame b, Func<double, double, double> c)
@@ -782,6 +787,84 @@ namespace ML.Yuk
                 for (int j = 0; j < t.Length; j++)
                 {
                     t1.Add(c(a[j, i], b));
+                }
+
+                z.AddColumn(new Pair(a.Columns[i], t1));
+            }
+
+            return z;
+        }
+
+        private static DataFrame ApplyPreviousFunc(DataFrame a, Func<double, double, double> c, bool isDefault = false)
+        {
+            DataFrame z = new DataFrame();
+
+            for (int i = 0; i < a.Columns.Length; i++)
+            {
+                Series t1 = new Series();
+
+                Series t = a[i];
+
+                for (int j = 0; j < t.Length; j++)
+                {
+                    if (j == 0)
+                    {
+                        if (isDefault)
+                        {
+                            t1.Add(a[j, i]);
+                        }
+                        else
+                        {
+                            t1.Add(null);
+                        }
+                    }
+                    else
+                    {
+                        t1.Add(c(a[j-1, i], a[j, i]));
+                    }
+                }
+
+                z.AddColumn(new Pair(a.Columns[i], t1));
+            }
+
+            return z;
+        }
+
+        private static DataFrame ApplyPreviousAllFunc(DataFrame a, Func<double, double, double> c, bool isDefault = false)
+        {
+            DataFrame z = new DataFrame();
+
+            for (int i = 0; i < a.Columns.Length; i++)
+            {
+                Series t1 = new Series();
+
+                Series t = a[i];
+
+                double total = 0;
+
+                for (int j = 0; j < t.Length; j++)
+                {
+                    if (j == 0)
+                    {
+                        if (isDefault)
+                        {
+                            t1.Add(a[j, i]);
+                        }
+                        else
+                        {
+                            t1.Add(null);
+                        }
+                    }
+                    else if (j == 1)
+                    {
+                        total = c(a[j-1, i], a[j, i]);
+                        t1.Add(total);
+                    }
+                    else
+                    {
+                        total = c(total, a[j, i]);
+                        t1.Add(total);
+                    }
                 }
 
                 z.AddColumn(new Pair(a.Columns[i], t1));

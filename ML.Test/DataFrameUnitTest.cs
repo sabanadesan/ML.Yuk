@@ -539,14 +539,19 @@ namespace ML.Test
         [Fact]
         public void TestPctChange()
         {
-            Pair col = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
-            Pair col1 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+            Pair col = new Pair("Column1", new Series(new NDArray(100, 200, 300)));
+            Pair col1 = new Pair("Column2", new Series(new NDArray(400, 500, 600)));
 
             DataFrame df = new DataFrame(col, col1);
 
             DataFrame t = df.PctChange();
 
-            Assert.True(df.Equals(10), "Arrays are not equal.");
+            Pair col5 = new Pair("Column1", new Series(new NDArray(null, 1, 0.5)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(null, 0.25, 0.2)));
+
+            DataFrame z = new DataFrame(col5, col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
         }
 
         [Fact]
@@ -559,20 +564,29 @@ namespace ML.Test
 
             DataFrame t = df.CumProd();
 
-            Assert.True(df.Equals(10), "Arrays are not equal.");
+            Pair col5 = new Pair("Column1", new Series(new NDArray(10, 200, 6000)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(40, 2000, 120000)));
+
+            DataFrame z = new DataFrame(col5, col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
         }
 
         [Fact]
-        public void TestPctChangeCol()
+        public void TestCumProdCol()
         {
             Pair col = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
             Pair col1 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
 
             DataFrame df = new DataFrame(col, col1);
 
-            DataFrame t = df["Column2"].PctChange();
+            DataFrame t = df["Column2"].CumProd();
 
-            Assert.True(df.Equals(10), "Arrays are not equal.");
+            Pair col6 = new Pair("Column2", new Series(new NDArray(40, 2000, 120000)));
+
+            DataFrame z = new DataFrame(col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
         }
 
         [Fact]
