@@ -429,9 +429,9 @@ namespace ML.Test
 
             DataFrame df1 = new DataFrame(col1, col2, col3, col4, col5, col6);
 
-            NDArray t = df1["Low"];
+            Series t = df1["Low"];
 
-            NDArray t2 = new NDArray(1586.699951, 1578.010010, 1590.890015);
+            Series t2 = new Series(new NDArray(1586.699951, 1578.010010, 1590.890015), index);
 
             Assert.True(t.Equals(t2), "Arrays are not equal.");
         }
@@ -453,9 +453,9 @@ namespace ML.Test
 
             df1.AddColumn(col6);
 
-            NDArray t = df1["Volume"];
+            Series t = df1["Volume"];
 
-            NDArray t2 = new NDArray(5174200, 6531900, 4175400);
+            Series t2 = new Series(new NDArray(5174200, 6531900, 4175400), index);
 
             Assert.True(t.Equals(t2), "Arrays are not equal.");
         }
@@ -507,7 +507,7 @@ namespace ML.Test
 
             df1["Low"] = t2;
 
-            Series t = new Series(df1["Low"]);
+            Series t = df1["Low"];
 
             Assert.True(t.Equals(t2), "Arrays are not equal.");
         }
@@ -527,11 +527,11 @@ namespace ML.Test
 
             DataFrame df1 = new DataFrame(col1, col2, col3, col4, col5, col6);
 
-            NDArray t2 = new NDArray(15, 20, 30);
+            Series t2 = new Series(new NDArray(15, 20, 30));
 
             df1["Low"] = t2;
 
-            NDArray t = df1["Low"];
+            Series t = df1["Low"];
 
             Assert.True(t.Equals(t2), "Arrays are not equal.");
         }
@@ -566,32 +566,42 @@ namespace ML.Test
 
             DataFrame df1 = new DataFrame(col1, col2);
 
-            Pair col3 = new Pair("Column1", new Series(new NDArray(70, 70, 90)));
+            Pair col3 = new Pair("Column1", new Series(new NDArray(70, 80, 90)));
             Pair col4 = new Pair("Column2", new Series(new NDArray(100, 110, 120)));
 
             DataFrame df2 = new DataFrame(col3, col4);
 
             DataFrame t = df1 + df2;
 
-            Assert.True(t.Equals(10), "Arrays are not equal.");
+            Pair col5 = new Pair("Column1", new Series(new NDArray(80, 100, 120)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(140, 160, 180)));
+
+            DataFrame z = new DataFrame(col5, col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
         }
 
         [Fact]
         public void TestMinus()
         {
-            Pair col1 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
-            Pair col2 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+            Pair col1 = new Pair("Column1", new Series(new NDArray(100, 200, 300)));
+            Pair col2 = new Pair("Column2", new Series(new NDArray(400, 500, 600)));
 
             DataFrame df1 = new DataFrame(col1, col2);
 
-            Pair col3 = new Pair("Column1", new Series(new NDArray(70, 70, 90)));
+            Pair col3 = new Pair("Column1", new Series(new NDArray(70, 80, 90)));
             Pair col4 = new Pair("Column2", new Series(new NDArray(100, 110, 120)));
 
             DataFrame df2 = new DataFrame(col3, col4);
 
             DataFrame t = df1 - df2;
 
-            Assert.True(t.Equals(10), "Arrays are not equal.");
+            Pair col5 = new Pair("Column1", new Series(new NDArray(30, 120, 210)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(300, 390, 480)));
+
+            DataFrame z = new DataFrame(col5, col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
         }
 
         [Fact]
@@ -602,32 +612,42 @@ namespace ML.Test
 
             DataFrame df1 = new DataFrame(col1, col2);
 
-            Pair col3 = new Pair("Column1", new Series(new NDArray(70, 70, 90)));
-            Pair col4 = new Pair("Column2", new Series(new NDArray(100, 110, 120)));
+            Pair col3 = new Pair("Column1", new Series(new NDArray(10, 10, 10)));
+            Pair col4 = new Pair("Column2", new Series(new NDArray(10, 10, 10)));
 
             DataFrame df2 = new DataFrame(col3, col4);
 
             DataFrame t = df1 * df2;
 
-            Assert.True(t.Equals(10), "Arrays are not equal.");
+            Pair col5 = new Pair("Column1", new Series(new NDArray(100, 200, 300)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(400, 500, 600)));
+
+            DataFrame z = new DataFrame(col5, col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
         }
 
         [Fact]
         public void TestDiv()
         {
-            Pair col1 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
-            Pair col2 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+            Pair col1 = new Pair("Column1", new Series(new NDArray(100, 200, 300)));
+            Pair col2 = new Pair("Column2", new Series(new NDArray(400, 500, 600)));
 
             DataFrame df1 = new DataFrame(col1, col2);
 
-            Pair col3 = new Pair("Column1", new Series(new NDArray(70, 70, 90)));
-            Pair col4 = new Pair("Column2", new Series(new NDArray(100, 110, 120)));
+            Pair col3 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col4 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
 
             DataFrame df2 = new DataFrame(col3, col4);
 
             DataFrame t = df1 / df2;
 
-            Assert.True(t.Equals(10), "Arrays are not equal.");
+            Pair col5 = new Pair("Column1", new Series(new NDArray(10, 10, 10)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(10, 10, 10)));
+
+            DataFrame z = new DataFrame(col5, col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
         }
 
         [Fact]
@@ -638,9 +658,14 @@ namespace ML.Test
 
             DataFrame df1 = new DataFrame(col1, col2);
 
-            DataFrame t = 10 + df1;
+            DataFrame t = df1 + 10;
 
-            Assert.True(t.Equals(10), "Arrays are not equal.");
+            Pair col5 = new Pair("Column1", new Series(new NDArray(20, 30, 40)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(50, 60, 70)));
+
+            DataFrame z = new DataFrame(col5, col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
         }
 
         [Fact]
@@ -651,9 +676,14 @@ namespace ML.Test
 
             DataFrame df1 = new DataFrame(col1, col2);
 
-            DataFrame t = 10 - df1;
+            DataFrame t = df1 - 10;
 
-            Assert.True(t.Equals(10), "Arrays are not equal.");
+            Pair col5 = new Pair("Column1", new Series(new NDArray(0, 10, 20)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(30, 40, 50)));
+
+            DataFrame z = new DataFrame(col5, col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
         }
 
         [Fact]
@@ -664,22 +694,14 @@ namespace ML.Test
 
             DataFrame df1 = new DataFrame(col1, col2);
 
-            DataFrame t = 10 * df1;
+            DataFrame t = df1 * 10;
 
-            Assert.True(t.Equals(10), "Arrays are not equal.");
-        }
+            Pair col5 = new Pair("Column1", new Series(new NDArray(100, 200, 300)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(400, 500, 600)));
 
-        [Fact]
-        public void TestDivInt()
-        {
-            Pair col1 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
-            Pair col2 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+            DataFrame z = new DataFrame(col5, col6);
 
-            DataFrame df1 = new DataFrame(col1, col2);
-
-            DataFrame t = 10 / df1;
-
-            Assert.True(t.Equals(10), "Arrays are not equal.");
+            Assert.True(t.Equals(z), "Arrays are not equal.");
         }
     }
 }

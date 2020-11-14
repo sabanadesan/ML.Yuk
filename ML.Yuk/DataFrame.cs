@@ -100,9 +100,7 @@ namespace ML.Yuk
         {
             Series scol = _data[column];
 
-            NDArray array = scol.GetValue();
-
-            return array;
+            return scol;
         }
 
         private void SetCol(string column, NDArray value)
@@ -730,46 +728,116 @@ namespace ML.Yuk
 
         }
 
-        public static DataFrame operator +(DataFrame a) => a;
+        private static double Sum(double a, double b)
+        {
+            return a + b;
+        }
 
-        public static DataFrame operator -(DataFrame a) => a * -1;
+        private static double Minus(double a, double b)
+        {
+            return a - b;
+        }
+
+        private static double Product(double a, double b)
+        {
+            return a * b;
+        }
+
+        private static double Div(double a, double b)
+        {
+            return a / b;
+        }
+
+        private static DataFrame ApplyFunc(DataFrame a, DataFrame b, Func<double, double, double> c)
+        {
+            DataFrame z = new DataFrame();
+
+            for (int i = 0; i < a.Columns.Length; i++)
+            {
+                Series t1 = new Series();
+
+                Series t = a[i];
+                
+                for (int j = 0; j < t.Length; j++)
+                {
+                    t1.Add(c(a[j, i], b[j, i])); 
+                }
+
+                z.AddColumn(new Pair(a.Columns[i], t1));
+            }
+
+            return z;
+        }
+
+        private static DataFrame ApplyFuncDouble(DataFrame a, double b, Func<double, double, double> c)
+        {
+            DataFrame z = new DataFrame();
+
+            for (int i = 0; i < a.Columns.Length; i++)
+            {
+                Series t1 = new Series();
+
+                Series t = a[i];
+
+                for (int j = 0; j < t.Length; j++)
+                {
+                    t1.Add(c(a[j, i], b));
+                }
+
+                z.AddColumn(new Pair(a.Columns[i], t1));
+            }
+
+            return z;
+        }
+
+        public static DataFrame operator +(DataFrame a)
+        {
+            return a;
+        }
+
+        public static DataFrame operator -(DataFrame a)
+        {
+            return a * -1;
+        }
 
         public static DataFrame operator +(DataFrame a, DataFrame b)
-            => new DataFrame();
+        {
+            return ApplyFunc(a, b, Sum);
+        }
 
         public static DataFrame operator +(DataFrame a, double b)
-            => new DataFrame();
-
-        public static DataFrame operator +(double a, DataFrame b)
-            => new DataFrame();
+        {
+            return ApplyFuncDouble(a, b, Sum);
+        }
 
         public static DataFrame operator -(DataFrame a, DataFrame b)
-            => a + (-b);
+        {
+            return a + (-b);
+        }
 
         public static DataFrame operator -(DataFrame a, double b)
-            => a + (-b);
-
-        public static DataFrame operator -(double a, DataFrame b)
-            => a + (-b);
+        {
+            return a + (-b);
+        }
 
         public static DataFrame operator *(DataFrame a, DataFrame b)
-            => new DataFrame();
+        {
+            return ApplyFunc(a, b, Product);
+        }
 
         public static DataFrame operator *(DataFrame a, double b)
-            => new DataFrame();
-
-        public static DataFrame operator *(double a, DataFrame b)
-            => new DataFrame();
+        {
+            return ApplyFuncDouble(a, b, Product);
+        }
 
         public static DataFrame operator /(DataFrame a, DataFrame b)
         {
-            return new DataFrame();
+            return ApplyFunc(a, b, Div);
         }
 
         public static DataFrame operator /(DataFrame a, double b)
-            => new DataFrame();
-
-        public static DataFrame operator /(double a, DataFrame b)
-            => new DataFrame();
+        {
+            return ApplyFuncDouble(a, b, Div);
+        }
     }
 }
