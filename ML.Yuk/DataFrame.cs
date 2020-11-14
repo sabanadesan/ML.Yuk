@@ -73,7 +73,7 @@ namespace ML.Yuk
             _indexes = NDArray.Unique(_indexes.Concat(t.GetIndex()));
         }
 
-        public dynamic GetRow(dynamic index)
+        public DataFrame GetRow(dynamic index)
         {
             int row = FindIndexRow(index);
 
@@ -86,17 +86,37 @@ namespace ML.Yuk
                 array.Add(a);
             }
 
-            return array;
+            DataFrame df = new DataFrame();
+            df.Add(array, new NDArray(_indexes[row]), _columns.Copy());
+
+            return df;
         }
 
-        private dynamic GetCol(string column)
+        private DataFrame GetCol(string column)
         {
             int i = FindIndexCol(column);
 
             return GetColByIndex(i);
         }
 
-        private dynamic GetColByIndex(int column)
+        private DataFrame GetColByIndex(int column)
+        {
+            Series scol = _data[column];
+
+            DataFrame df = new DataFrame();
+            df.AddColumn(new Pair(_columns[column], scol));
+
+            return df;
+        }
+
+        private Series GetColBySeries(string column)
+        {
+            int i = FindIndexCol(column);
+
+            return GetColBySeriesByIndex(i);
+        }
+
+        private Series GetColBySeriesByIndex(int column)
         {
             Series scol = _data[column];
 
@@ -198,23 +218,29 @@ namespace ML.Yuk
         private dynamic Get(int row, int col)
         {
             Series scol = _data[col];
-            return scol[row];
-        }
-
-        private dynamic Get(Slice row, int col)
-        {
-            Series scol = _data[col];
             dynamic t = scol[row];
 
             return t;
         }
 
-        private dynamic Get(int row, Slice col)
+        private DataFrame Get(Slice row, int col)
+        {
+            Series scol = _data[col];
+            NDArray t = scol[row];
+
+            DataFrame df = new DataFrame();
+
+            df.AddColumn(new Pair(_columns[col], new Series(t, _indexes[row])));
+
+            return df;
+        }
+
+        private DataFrame Get(int row, Slice col)
         {
             int startCol = GetIndex(col.Start);
             int endCol = GetIndex(col.End);
 
-            NDArray array = new NDArray();
+            DataFrame df = new DataFrame();
 
             for (int i = 0; i < _data.Length; i++)
             {
@@ -222,11 +248,12 @@ namespace ML.Yuk
                 {
                     Series scol = _data[i];
                     dynamic a = scol[row];
-                    array.Add(a);
+
+                    df.AddColumn(new Pair(_columns[i], new Series(new NDArray(a), new NDArray(_indexes[row]))));
                 }
             }
 
-            return array;
+            return df;
         }
 
         private void Set(int row, int col, dynamic value)
@@ -235,7 +262,7 @@ namespace ML.Yuk
             scol[row] = value;
         }
 
-        private NDArray Get(Slice row, Slice col)
+        private DataFrame Get(Slice row, Slice col)
         {
             int startRow = GetIndex(row.Start);
             int endRow = GetIndex(row.End);
@@ -243,7 +270,7 @@ namespace ML.Yuk
             int startCol = GetIndex(col.Start);
             int endCol = GetIndex(col.End);
 
-            NDArray array = new NDArray();
+            DataFrame df = new DataFrame();
 
             for (int i = 0; i < _data.Length; i++)
             {
@@ -251,11 +278,12 @@ namespace ML.Yuk
                 {
                     Series scol = _data[i];
                     NDArray a = scol[row];
-                    array.Add(a);
+
+                    df.AddColumn(new Pair(_columns[i], new Series(a, _indexes[row])));
                 }
             }
          
-            return array;
+            return df;
         }
 
         private int GetIndex(Index index)
@@ -761,8 +789,8 @@ namespace ML.Yuk
             {
                 Series t1 = new Series();
 
-                Series t = a[i];
-                
+                Series t = a.GetColBySeriesByIndex(i);
+
                 for (int j = 0; j < t.Length; j++)
                 {
                     t1.Add(c(a[j, i], b[j, i])); 
@@ -782,7 +810,7 @@ namespace ML.Yuk
             {
                 Series t1 = new Series();
 
-                Series t = a[i];
+                Series t = a.GetColBySeriesByIndex(i);
 
                 for (int j = 0; j < t.Length; j++)
                 {
@@ -803,7 +831,7 @@ namespace ML.Yuk
             {
                 Series t1 = new Series();
 
-                Series t = a[i];
+                Series t = a.GetColBySeriesByIndex(i);
 
                 for (int j = 0; j < t.Length; j++)
                 {
@@ -838,7 +866,7 @@ namespace ML.Yuk
             {
                 Series t1 = new Series();
 
-                Series t = a[i];
+                Series t = a.GetColBySeriesByIndex(i);
 
                 double total = 0;
 

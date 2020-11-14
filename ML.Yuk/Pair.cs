@@ -6,11 +6,11 @@ namespace ML.Yuk
 {
     public class Pair
     {
-        private KeyValuePair<String, dynamic> m_Pair;
+        private KeyValuePair<String, Series> m_Pair;
 
-        public Pair(String key, dynamic value)
+        public Pair(String key, Series value)
         {
-            m_Pair = new KeyValuePair<String, dynamic>(key, value);
+            m_Pair = new KeyValuePair<String, Series>(key, value);
         }
 
         public dynamic Value()

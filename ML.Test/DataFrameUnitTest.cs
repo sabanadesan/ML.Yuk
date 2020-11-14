@@ -99,9 +99,11 @@ namespace ML.Test
 
             DataFrame df = new DataFrame(col, col1);
 
-            NDArray i = df[new Slice(0, 2), "Column2"];
+            DataFrame i = df[new Slice(0, 2), "Column2"];
 
-            Assert.True(i.Equals(new NDArray(4, 5)), "Arrays are not equal.");
+            DataFrame t = new DataFrame(new Pair("Column2", new Series(new NDArray(4, 5))));
+
+            Assert.True(i.Equals(t), "Arrays are not equal.");
         }
 
         [Fact]
@@ -112,9 +114,13 @@ namespace ML.Test
 
             DataFrame df = new DataFrame(col, col1);
 
-            NDArray i = df[1, new Slice(0, 2)];
+            DataFrame i = df[1, new Slice(0, 2)];
 
-            Assert.True(i.Equals(new NDArray(2, 5)), "Arrays are not equal.");
+            DataFrame t = new DataFrame();
+            t.AddColumn(new Pair("Column1", new Series(new NDArray(2), new NDArray(1))));
+            t.AddColumn(new Pair("Column2", new Series(new NDArray(5), new NDArray(1))));
+
+            Assert.True(i.Equals(t), "Arrays are not equal.");
         }
 
         [Fact]
@@ -125,9 +131,13 @@ namespace ML.Test
 
             DataFrame df = new DataFrame(col, col1);
 
-            NDArray i = df[new Slice(1, 3), new Slice(0, 2)];
+            DataFrame i = df[new Slice(1, 3), new Slice(0, 2)];
 
-            Assert.True(i.Equals(new NDArray(new NDArray(2, 3), new NDArray(5, 6))), "Arrays are not equal.");
+            DataFrame t = new DataFrame();
+            t.AddColumn(new Pair("Column1", new Series(new NDArray(2, 3), new NDArray(1, 2))));
+            t.AddColumn(new Pair("Column2", new Series(new NDArray(5, 6), new NDArray(1, 2))));
+
+            Assert.True(i.Equals(t), "Arrays are not equal.");
         }
 
         [Fact]
@@ -408,9 +418,12 @@ namespace ML.Test
 
             DataFrame df1 = new DataFrame(col1, col2, col3, col4, col5, col6);
 
-            NDArray t = df1.GetRow(DateTime.Parse("2018-03-13"));
+            DataFrame t = df1.GetRow(DateTime.Parse("2018-03-13"));
 
-            NDArray t2 = new NDArray(1615.959961, 1617.540039, 1578.010010, 1588.180054, 1588.180054, 6531900);
+            DataFrame t2 = new DataFrame();
+            NDArray cols = new NDArray("Open", "High", "Low", "Close", "Adj Close", "Volume");
+
+            t2.Add(new NDArray(1615.959961, 1617.540039, 1578.010010, 1588.180054, 1588.180054, 6531900), new NDArray(DateTime.Parse("2018-03-13")), cols);
 
             Assert.True(t.Equals(t2), "Arrays are not equal.");
         }
@@ -429,9 +442,9 @@ namespace ML.Test
 
             DataFrame df1 = new DataFrame(col1, col2, col3, col4, col5, col6);
 
-            Series t = df1["Low"];
+            DataFrame t = df1["Low"];
 
-            Series t2 = new Series(new NDArray(1586.699951, 1578.010010, 1590.890015), index);
+            DataFrame t2 = new DataFrame(new Pair("Low", new Series(new NDArray(1586.699951, 1578.010010, 1590.890015), index)));
 
             Assert.True(t.Equals(t2), "Arrays are not equal.");
         }
@@ -453,9 +466,9 @@ namespace ML.Test
 
             df1.AddColumn(col6);
 
-            Series t = df1["Volume"];
+            DataFrame t = df1["Volume"];
 
-            Series t2 = new Series(new NDArray(5174200, 6531900, 4175400), index);
+            DataFrame t2 = new DataFrame(new Pair("Volume", new Series(new NDArray(5174200, 6531900, 4175400), index)));
 
             Assert.True(t.Equals(t2), "Arrays are not equal.");
         }
@@ -507,9 +520,11 @@ namespace ML.Test
 
             df1["Low"] = t2;
 
-            Series t = df1["Low"];
+            DataFrame t = df1["Low"];
 
-            Assert.True(t.Equals(t2), "Arrays are not equal.");
+            DataFrame a = new DataFrame(new Pair("Low", new Series(new NDArray(15, 20, 30))));
+
+            Assert.True(t.Equals(a), "Arrays are not equal.");
         }
 
 
@@ -527,13 +542,15 @@ namespace ML.Test
 
             DataFrame df1 = new DataFrame(col1, col2, col3, col4, col5, col6);
 
-            Series t2 = new Series(new NDArray(15, 20, 30));
+            NDArray t2 = new NDArray(15, 20, 30);
 
             df1["Low"] = t2;
 
-            Series t = df1["Low"];
+            DataFrame t = df1["Low"];
 
-            Assert.True(t.Equals(t2), "Arrays are not equal.");
+            DataFrame a = new DataFrame(new Pair("Low", new Series(new NDArray(15, 20, 30))));
+
+            Assert.True(t.Equals(a), "Arrays are not equal.");
         }
 
         [Fact]
