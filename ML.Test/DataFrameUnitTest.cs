@@ -544,6 +544,8 @@ namespace ML.Test
 
             DataFrame df = new DataFrame(col, col1);
 
+            DataFrame t = df.PctChange();
+
             Assert.True(df.Equals(10), "Arrays are not equal.");
         }
 
@@ -554,6 +556,21 @@ namespace ML.Test
             Pair col1 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
 
             DataFrame df = new DataFrame(col, col1);
+
+            DataFrame t = df.CumProd();
+
+            Assert.True(df.Equals(10), "Arrays are not equal.");
+        }
+
+        [Fact]
+        public void TestPctChangeCol()
+        {
+            Pair col = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col1 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+
+            DataFrame df = new DataFrame(col, col1);
+
+            DataFrame t = df["Column2"].PctChange();
 
             Assert.True(df.Equals(10), "Arrays are not equal.");
         }

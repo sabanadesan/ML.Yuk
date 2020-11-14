@@ -718,14 +718,14 @@ namespace ML.Yuk
             return converted;
         }
 
-        public void PctChange()
+        public DataFrame PctChange()
         {
-
+            return new DataFrame();
         }
 
-        public void CumProd()
+        public DataFrame CumProd()
         {
-
+            return new DataFrame();
         }
 
         private static double Sum(double a, double b)
