@@ -142,5 +142,10 @@ namespace ML.Yuk
             _index.Add(index);
             _array.Add(item);
         }
+
+        public dynamic Max()
+        {
+            return 0;
+        }
     }
 }

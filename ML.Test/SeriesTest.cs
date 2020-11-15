@@ -120,5 +120,16 @@ namespace ML.Test
 
             Assert.True(s.Equals(s1), "Arrays are not equal.");
         }
+
+        [Fact]
+        public void TestMax()
+        {
+            NDArray nd = new NDArray(10, 20, 30);
+            Series s = new Series(nd, new NDArray(0, "cat", 2));
+
+            double t = s.Max();
+
+            Assert.True(t.Equals(30), "Arrays are not equal.");
+        }
     }
 }

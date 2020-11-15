@@ -774,5 +774,21 @@ namespace ML.Test
 
             Assert.True(t.Equals(z), "Arrays are not equal.");
         }
+
+        [Fact]
+        public void TestGetValue()
+        {
+            Pair col1 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col2 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+
+            DataFrame df1 = new DataFrame(col1, col2);
+
+            NDArray t = df1.GetValue();
+
+            NDArray z = new NDArray(10);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
+        }
+        
     }
 }

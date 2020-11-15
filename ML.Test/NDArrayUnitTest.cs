@@ -387,5 +387,25 @@ namespace ML.Test
 
             Assert.True(nd.Equals(nd1), "Arrays are not equal.");
         }
+
+        [Fact]
+        public void TestStd()
+        {
+            NDArray nd = new NDArray(1, 2, 3);
+
+            double i = NDArray.Std(nd);
+
+            Assert.True(i.Equals(1), "Arrays are not equal.");
+        }
+
+        [Fact]
+        public void TestMean()
+        {
+            NDArray nd = new NDArray(1, 2, 3);
+
+            double i = NDArray.Mean(nd);
+
+            Assert.True(i.Equals(1), "Arrays are not equal.");
+        }
     }
 }

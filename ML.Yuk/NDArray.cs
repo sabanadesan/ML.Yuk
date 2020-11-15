@@ -369,6 +369,16 @@ namespace ML.Yuk
             return newItems;
         }
 
+        public static double Std(NDArray array)
+        {
+            return 0;
+        }
+
+        public static double Mean(NDArray array)
+        {
+            return 0;
+        }
+
         /*
         public void Zeros()
         {

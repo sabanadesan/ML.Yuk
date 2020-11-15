@@ -1000,5 +1000,10 @@ namespace ML.Yuk
         {
             return ApplyFuncDouble(a, b, Div);
         }
+
+        public NDArray GetValue()
+        {
+            return new NDArray();
+        }
     }
 }
