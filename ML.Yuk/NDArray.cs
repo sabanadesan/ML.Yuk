@@ -377,34 +377,38 @@ namespace ML.Yuk
 
             for (int i = 0; i < array.Length; i++)
             {
-                dynamic t = array[i];
+                double? t = array[i];
 
-                dynamic square = Math.Pow((t - mean), 2);
+                if (t != null)
+                {
+                    double? square = Math.Pow((t.Value - mean), 2);
 
-                sum = sum + square;
+                    sum = sum + square;
+                }
             }
 
-            dynamic mean_square = sum / array.Length;
+            double mean_square = sum / array.Length;
 
-            dynamic sqrt = Math.Sqrt(mean_square);
-
-            
+            double sqrt = Math.Sqrt(mean_square);
 
             return sqrt;
         }
 
         public static double Mean(NDArray array)
         {
-            dynamic sum = 0;
+            double sum = 0;
 
             for (int i = 0; i < array.Length; i++)
             {
-                dynamic t = array[i];
+                double? t = array[i];
 
-                sum = sum + t;
+                if (t != null)
+                {
+                    sum = sum + t.Value;
+                }
             }
 
-            dynamic mean = sum / array.Length;
+            double mean = sum / array.Length;
 
             return mean;
         }

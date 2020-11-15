@@ -607,6 +607,40 @@ namespace ML.Test
         }
 
         [Fact]
+        public void TestCumProdColNull()
+        {
+            Pair col = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col1 = new Pair("Column2", new Series(new NDArray(null, 50, 60)));
+
+            DataFrame df = new DataFrame(col, col1);
+
+            DataFrame t = df["Column2"].CumProd();
+
+            Pair col6 = new Pair("Column2", new Series(new NDArray(null, 50, 3000)));
+
+            DataFrame z = new DataFrame(col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
+        }
+
+        [Fact]
+        public void TestCumProdColNull2()
+        {
+            Pair col = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col1 = new Pair("Column2", new Series(new NDArray(40, null, 60)));
+
+            DataFrame df = new DataFrame(col, col1);
+
+            DataFrame t = df["Column2"].CumProd();
+
+            Pair col6 = new Pair("Column2", new Series(new NDArray(40, null, 2400)));
+
+            DataFrame z = new DataFrame(col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
+        }
+
+        [Fact]
         public void TestSum()
         {
             Pair col1 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
@@ -788,6 +822,89 @@ namespace ML.Test
             NDArray z = new NDArray(new NDArray(10, 20, 30), new NDArray(40, 50, 60));
 
             Assert.True(t.Equals(z), "Arrays are not equal.");
+        }
+
+        [Fact]
+        public void TestSetCol()
+        {
+            Pair col1 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col2 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+
+            DataFrame df1 = new DataFrame(col1, col2);
+
+            df1["Column3"] = new Series(new NDArray(70, 80, 90));
+
+            Pair col5 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+            Pair col7 = new Pair("Column3", new Series(new NDArray(70, 80, 90)));
+
+            DataFrame z = new DataFrame(col5, col6, col7);
+
+            Assert.True(df1.Equals(z), "Arrays are not equal.");
+        }
+
+        [Fact]
+        public void TestSetColDataFrame()
+        {
+            Pair col1 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col2 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+
+            DataFrame df1 = new DataFrame(col1, col2);
+
+            df1["Column3"] = new DataFrame(new Pair("Column3", new Series(new NDArray(70, 80, 90))));
+
+            Pair col5 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+            Pair col7 = new Pair("Column3", new Series(new NDArray(70, 80, 90)));
+
+            DataFrame z = new DataFrame(col5, col6, col7);
+
+            Assert.True(df1.Equals(z), "Arrays are not equal.");
+        }
+
+        [Fact]
+        public void TestSetColNum()
+        {
+            Pair col1 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col2 = new Pair("Column2", new Series(new NDArray(40, 50, 60)));
+
+            DataFrame df1 = new DataFrame(col1, col2);
+
+            df1[1] = new Series(new NDArray(70, 80, 90));
+
+            Pair col5 = new Pair("Column1", new Series(new NDArray(10, 20, 30)));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(70, 80, 90)));
+
+            DataFrame z = new DataFrame(col5, col6);
+
+            Assert.True(df1.Equals(z), "Arrays are not equal.");
+        }
+
+
+        [Fact]
+        public void TestIndexerGetLastRow()
+        {
+            Pair col = new Pair("Column1", new Series(new NDArray(1, 2, 3)));
+            Pair col1 = new Pair("Column2", new Series(new NDArray(4, 5, 6)));
+
+            DataFrame df = new DataFrame(col, col1);
+
+            int i = df[-2, "Column2"];
+
+            Assert.True(i.Equals(5), "Arrays are not equal.");
+        }
+
+        [Fact]
+        public void TestIndexerGetNumLastRow()
+        {
+            Pair col = new Pair("Column1", new Series(new NDArray(1, 2, 3)));
+            Pair col1 = new Pair("Column2", new Series(new NDArray(4, 5, 6)));
+
+            DataFrame df = new DataFrame(col, col1);
+
+            int i = df[-2, 1];
+
+            Assert.True(i.Equals(5), "Arrays are not equal.");
         }
     }
 }

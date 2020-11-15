@@ -177,11 +177,25 @@ namespace ML.Yuk
         {
             int i = FindIndexCol(column);
 
-            SetColByIndex(i, value);
+            SetColByIndex(i, value, column);
         }
 
-        private void SetColByIndex(int column, NDArray value)
+        private void SetColByIndex(int column, NDArray value, string col=null)
         {
+            if (column == -1)
+            {
+                if (col == null)
+                {
+                    throw new System.IndexOutOfRangeException();
+                }
+
+                _data.Add(new Series());
+
+                _columns.Add(col);
+
+                column = _columns.Length - 1;
+            }
+
             Series t = new Series(value);
 
             _data[column] = t;
@@ -189,16 +203,58 @@ namespace ML.Yuk
             _indexes = NDArray.Unique(_indexes.Concat(t.GetIndex()));
         }
 
+        private void SetCol(string column, DataFrame value)
+        {
+            int i = FindIndexCol(column);
+
+            SetColByIndex(i, value, column);
+        }
 
         private void SetCol(string column, Series value)
         {
             int i = FindIndexCol(column);
 
-            SetColByIndex(i, value);
+            SetColByIndex(i, value, column);
         }
 
-        private void SetColByIndex(int column, Series value)
+        private void SetColByIndex(int column, DataFrame value, string col = null)
         {
+            if (column == -1)
+            {
+                if (col == null)
+                {
+                    throw new System.IndexOutOfRangeException();
+                }
+
+                _data.Add(new Series());
+
+                _columns.Add(col);
+
+                column = _columns.Length - 1;
+            }
+
+            NDArray t = value.GetValue();
+            _data[column] = new Series(t[0]);
+
+            _indexes = NDArray.Unique(_indexes.Concat(value.GetIndex()));
+        }
+
+        private void SetColByIndex(int column, Series value, string col = null)
+        {
+            if (column == -1)
+            {
+                if (col == null)
+                {
+                    throw new System.IndexOutOfRangeException();
+                }
+
+                _data.Add(new Series());
+
+                _columns.Add(col);
+
+                column = _columns.Length - 1;
+            }
+
             _data[column] = value;
 
             _indexes = NDArray.Unique(_indexes.Concat(value.GetIndex()));
@@ -268,6 +324,12 @@ namespace ML.Yuk
         private dynamic Get(int row, int col)
         {
             Series scol = _data[col];
+
+            if (row < 0)
+            {
+                row = scol.Length + row;
+            }
+
             dynamic t = scol[row];
 
             return t;
@@ -803,35 +865,88 @@ namespace ML.Yuk
 
         public DataFrame CumProd()
         {
-            return ApplyPreviousAllFunc(this, Product, true);
+            return ApplyPreviousAllFunc(this, CumProduct, true);
         }
 
-        private static double Sum(double a, double b)
+        private static double? Sum(double? a, double? b)
         {
+            if (a == null || b == null)
+            {
+                return null;
+            }
+
             return a + b;
         }
 
-        private static double Minus(double a, double b)
+        private static double? Minus(double? a, double? b)
         {
+            if (a == null || b == null)
+            {
+                return null;
+            }
+
             return a - b;
         }
 
-        private static double Product(double a, double b)
+        private static double? Product(double? a, double? b)
         {
+            if (a == null || b == null)
+            {
+                return null;
+            }
+
             return a * b;
         }
 
-        private static double Div(double a, double b)
+        private static double? CumProduct(DataFrame a, dynamic column, dynamic index)
         {
+            double? total = a[0, column];
+
+            if (total == null)
+            {
+                total = 1;
+            }
+
+            for (int i=1; i <= index; i++)
+            {
+                double? t = a[i, column];
+                if (t == null)
+                {
+                   t = 1;
+                }
+
+                total = total * t;
+            }
+
+            if (a[index, column] == null)
+            {
+                return null;
+            }
+
+            return total;
+        }
+
+        private static double? Div(double? a, double? b)
+        {
+            if (a == null || b == null)
+            {
+                return null;
+            }
+
             return a / b;
         }
 
-        private static double CalcPctChange(double a, double b)
+        private static double? CalcPctChange(double? a, double? b)
         {
+            if (a == null || b == null)
+            {
+                return null;
+            }
+
             return ((b - a) / a);
         }
 
-        private static DataFrame ApplyFunc(DataFrame a, DataFrame b, Func<double, double, double> c)
+        private static DataFrame ApplyFunc(DataFrame a, DataFrame b, Func<double?, double?, double?> c)
         {
             DataFrame z = new DataFrame();
 
@@ -852,7 +967,7 @@ namespace ML.Yuk
             return z;
         }
 
-        private static DataFrame ApplyFuncDouble(DataFrame a, double b, Func<double, double, double> c)
+        private static DataFrame ApplyFuncDouble(DataFrame a, double? b, Func<double?, double?, double?> c)
         {
             DataFrame z = new DataFrame();
 
@@ -873,7 +988,7 @@ namespace ML.Yuk
             return z;
         }
 
-        private static DataFrame ApplyPreviousFunc(DataFrame a, Func<double, double, double> c, bool isDefault = false)
+        private static DataFrame ApplyPreviousFunc(DataFrame a, Func<double?, double?, double?> c, bool isDefault = false)
         {
             DataFrame z = new DataFrame();
 
@@ -908,7 +1023,7 @@ namespace ML.Yuk
             return z;
         }
 
-        private static DataFrame ApplyPreviousAllFunc(DataFrame a, Func<double, double, double> c, bool isDefault = false)
+        private static DataFrame ApplyPreviousAllFunc(DataFrame a, Func<DataFrame, dynamic, dynamic, double?> c, bool isDefault = false)
         {
             DataFrame z = new DataFrame();
 
@@ -918,31 +1033,10 @@ namespace ML.Yuk
 
                 Series t = a.GetColBySeriesByIndex(i);
 
-                double total = 0;
-
                 for (int j = 0; j < t.Length; j++)
                 {
-                    if (j == 0)
-                    {
-                        if (isDefault)
-                        {
-                            t1.Add(a[j, i]);
-                        }
-                        else
-                        {
-                            t1.Add(null);
-                        }
-                    }
-                    else if (j == 1)
-                    {
-                        total = c(a[j-1, i], a[j, i]);
-                        t1.Add(total);
-                    }
-                    else
-                    {
-                        total = c(total, a[j, i]);
-                        t1.Add(total);
-                    }
+                    double? total = c(a, i, j);
+                    t1.Add(total);
                 }
 
                 z.AddColumn(new Pair(a.Columns[i], t1));
