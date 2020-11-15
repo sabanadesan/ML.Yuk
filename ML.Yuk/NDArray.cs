@@ -289,6 +289,18 @@ namespace ML.Yuk
             return a;
         }
 
+        public void Remove(int index)
+        {
+            int size = _array.Length - 1;
+            dynamic[] a = new dynamic[size];
+
+
+            Array.Copy(_array, 0, a, 0, index);
+            Array.Copy(_array, index + 1 , a, index , size - index);
+
+            _array = a;
+        }
+
         private int GetIndex(Index index)
         {
             int i = index.Value;

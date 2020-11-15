@@ -37,6 +37,11 @@ namespace ML.Yuk
             return _index.Copy();
         }
 
+        public void SetIndex(NDArray index)
+        {
+            _index = index;
+        }
+
         private NDArray CreateIndex()
         {
             NDArray nd = new NDArray();

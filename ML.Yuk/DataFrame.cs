@@ -58,7 +58,20 @@ namespace ML.Yuk
 
         public void SetIndex(string column)
         {
+            int i = FindIndexCol(column);
 
+            Series index = _data[i];
+
+            _data.Remove(i);
+            _columns.Remove(i);
+
+            _indexes = index.GetValue();
+
+            for (int j = 0; j < _data.Length; j++)
+            {
+                Series scol = _data[j];
+                scol.SetIndex(_indexes);
+            }
         }
 
         public void AddColumn(Pair p)

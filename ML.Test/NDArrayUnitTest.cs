@@ -375,5 +375,17 @@ namespace ML.Test
 
             Assert.True(t.Equals(t2), "Arrays are not equal.");
         }
+
+        [Fact]
+        public void TestRemove()
+        {
+            NDArray nd = new NDArray(1, 2, 3);
+
+            nd.Remove(2);
+
+            NDArray nd1 = new NDArray(1, 2);
+
+            Assert.True(nd.Equals(nd1), "Arrays are not equal.");
+        }
     }
 }
