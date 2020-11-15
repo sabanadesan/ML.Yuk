@@ -371,12 +371,42 @@ namespace ML.Yuk
 
         public static double Std(NDArray array)
         {
-            return 0;
+            double mean = NDArray.Mean(array);
+
+            dynamic sum = 0;
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                dynamic t = array[i];
+
+                dynamic square = Math.Pow((t - mean), 2);
+
+                sum = sum + square;
+            }
+
+            dynamic mean_square = sum / array.Length;
+
+            dynamic sqrt = Math.Sqrt(mean_square);
+
+            
+
+            return sqrt;
         }
 
         public static double Mean(NDArray array)
         {
-            return 0;
+            dynamic sum = 0;
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                dynamic t = array[i];
+
+                sum = sum + t;
+            }
+
+            dynamic mean = sum / array.Length;
+
+            return mean;
         }
 
         /*

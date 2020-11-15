@@ -971,6 +971,11 @@ namespace ML.Yuk
             return ApplyFuncDouble(a, b, Sum);
         }
 
+        public static DataFrame operator +(double a, DataFrame b)
+        {
+            return ApplyFuncDouble(b, a, Sum);
+        }
+
         public static DataFrame operator -(DataFrame a, DataFrame b)
         {
             return a + (-b);
@@ -991,6 +996,11 @@ namespace ML.Yuk
             return ApplyFuncDouble(a, b, Product);
         }
 
+        public static DataFrame operator *(double a, DataFrame b)
+        {
+            return ApplyFuncDouble(b, a, Product);
+        }
+
         public static DataFrame operator /(DataFrame a, DataFrame b)
         {
             return ApplyFunc(a, b, Div);
@@ -1003,7 +1013,18 @@ namespace ML.Yuk
 
         public NDArray GetValue()
         {
-            return new NDArray();
+            NDArray nd = new NDArray();
+
+            for (int i = 0; i < _data.Length; i++)
+            {
+                Series col = _data[i];
+
+                NDArray val = col.GetValue();
+
+                nd.Add(val);
+            }
+
+            return nd;
         }
     }
 }

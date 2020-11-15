@@ -145,7 +145,18 @@ namespace ML.Yuk
 
         public dynamic Max()
         {
-            return 0;
+            dynamic max = _array[0];
+
+            for (int i = 0; i < _array.Length; i++)
+            {
+                dynamic t = _array[i];
+                if (max < t)
+                {
+                    max = t;
+                }
+            }
+
+            return max;
         }
     }
 }

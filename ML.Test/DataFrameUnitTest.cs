@@ -785,10 +785,9 @@ namespace ML.Test
 
             NDArray t = df1.GetValue();
 
-            NDArray z = new NDArray(10);
+            NDArray z = new NDArray(new NDArray(10, 20, 30), new NDArray(40, 50, 60));
 
             Assert.True(t.Equals(z), "Arrays are not equal.");
         }
-        
     }
 }
