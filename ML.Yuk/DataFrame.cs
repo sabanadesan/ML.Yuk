@@ -60,18 +60,55 @@ namespace ML.Yuk
         {
             int i = FindIndexCol(column);
 
-            Series index = _data[i];
+            Series col = _data[i];
 
             _data.Remove(i);
             _columns.Remove(i);
 
-            _indexes = index.GetValue();
+            NDArray new_index = col.GetValue();
 
             for (int j = 0; j < _data.Length; j++)
             {
                 Series scol = _data[j];
-                scol.SetIndex(_indexes);
+
+                NDArray col_index = scol.GetIndex();
+
+                NDArray index = Map(_indexes, col_index, new_index);
+
+                scol.SetIndex(index);
             }
+
+            _indexes = new_index;
+        }
+
+        private NDArray Map(NDArray old_index, NDArray col_index, NDArray new_index)
+        {
+            NDArray t = new NDArray();
+
+            for (int i = 0; i < col_index.Length; i++)
+            {
+                int index = FindInArray(old_index, col_index[i]);
+                
+                if (index != -1)
+                {
+                    t.Add(new_index[index]);
+                }
+            }
+
+            return t;
+        }
+
+        private int FindInArray(NDArray array, dynamic item)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == item)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         public void AddColumn(Pair p)

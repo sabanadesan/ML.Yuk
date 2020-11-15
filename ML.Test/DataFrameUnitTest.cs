@@ -751,5 +751,28 @@ namespace ML.Test
 
             Assert.True(t.Equals(z), "Arrays are not equal.");
         }
+
+        [Fact]
+        public void TestSetIndexJagged()
+        {
+            NDArray index = new NDArray(DateTime.Parse("2018-03-12"), DateTime.Parse("2018-03-13"), DateTime.Parse("2018-03-14"), DateTime.Parse("2018-03-15"), DateTime.Parse("2018-03-16"), DateTime.Parse("2018-03-17"));
+            NDArray index1 = new NDArray(DateTime.Parse("2018-03-12"), DateTime.Parse("2018-03-13"), DateTime.Parse("2018-03-14"));
+            NDArray index2 = new NDArray(DateTime.Parse("2018-03-15"), DateTime.Parse("2018-03-16"), DateTime.Parse("2018-03-17"));
+
+            Pair col1 = new Pair("Column1", new Series(new NDArray(10, 20, 30), index1));
+            Pair col2 = new Pair("Column2", new Series(new NDArray(40, 50, 60), index2));
+            Pair col3 = new Pair("Date", new Series(index));
+
+            DataFrame t = new DataFrame(col1, col2, col3);
+
+            t.SetIndex("Date");
+
+            Pair col5 = new Pair("Column1", new Series(new NDArray(10, 20, 30), index1));
+            Pair col6 = new Pair("Column2", new Series(new NDArray(40, 50, 60), index2));
+
+            DataFrame z = new DataFrame(col5, col6);
+
+            Assert.True(t.Equals(z), "Arrays are not equal.");
+        }
     }
 }
